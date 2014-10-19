@@ -1,33 +1,44 @@
-#include "cities.h"
+#include "city.h"
 
-cities::cities()
+city::city()
 {
 }
 
-cities::cities(QString name, QString country)
+city::city(QString name, QString country)
 {
     this->country = country;
     this->name = name;
 }
 
 
-void cities::setCountry(QString country)
+void city::setCountry(QString country)
 {
     this->country = country;
 }
 
-void cities::setName(QString name)
+void city::setName(QString name)
 {
     this->name = name;
 }
 
-void cities::setlat(QString lat)
+void city::setlat(QString lat)
 {
     this->lat = lat;
 }
 
-void cities::setlng(QString lng)
+void city::setlng(QString lng)
 {
     this->lng = lng;
+}
+
+inline bool operator==(const city &e1, const city &e2)
+{
+    return e1.name == e2.name
+        && e1.country == e2.country;
+}
+
+inline uint qHash(const city &key)
+{
+    return qHash(key.name) * qHash(key.country);
 }
 

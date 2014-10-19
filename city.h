@@ -3,11 +3,11 @@
 
 #include <QtNetwork>
 
-class cities
+class city
 {
 public:
-    cities();
-    cities(QString name, QString country);
+    city();
+    city(QString name, QString country);
     void setName(QString name);
     void setCountry(QString country);
     void setlat(QString lat);
@@ -18,4 +18,4 @@ public:
     QString lat;
 };
 
-#endif // CITIES_H
+#endif // CITY_H

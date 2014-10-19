@@ -3,7 +3,7 @@
 
 #include <QtNetwork>
 #include <QtNetwork>
-#include <cities.h>
+#include <city.h>
 
 class europeCitiesResolver : public QObject
 {
@@ -13,10 +13,10 @@ public:
     europeCitiesResolver();
     bool verifyCountry(QString cityName, QString country);
     QString getCountry(QString cityName);
-    QHash<QString, cities*> getCities();
+    QHash<QString, city*>* getCities();
 
 private:
-    QHash<QString, cities*> citiesList;
+    QHash<QString, city*> citiesList;
     void loadCities();
     QNetworkReply* cityNetworkReply;
 

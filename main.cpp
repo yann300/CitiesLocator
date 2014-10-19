@@ -4,7 +4,8 @@
 #include <QSplitter>
 #include <QtNetwork>
 #include <QListView>
-
+#include <QSplashScreen>
+#include <QTimer>
 
 int main(int argc, char *argv[])
 {
