@@ -55,7 +55,6 @@ void MainWindow::handleokButton(){
         modelTrue->setData(modelTrue->index(modelTrue->rowCount()-1), ui->label->text());
         this->score = this->score + 15;
         ui->labelScore->setText(QString::number(this->score));
-
     }
     else{
         modelFalse->insertRows(modelFalse->rowCount(), 1);
@@ -64,8 +63,7 @@ void MainWindow::handleokButton(){
     city* city = this->citiesRes->getCities()->value(ui->label->text());
     ui->webView->page()->mainFrame()->evaluateJavaScript("initialize(" + city->lat + "," + city->lng + ")");
     if (res){
-        int ret = citiesRes->getCities()->remove(ui->label->text());
-        ret = 3;
+        citiesRes->getCities()->remove(ui->label->text());
     }
 
     this->stepTest();
