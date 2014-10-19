@@ -1,7 +1,7 @@
 #ifndef EUROPECITIESRESOLVER_H
 #define EUROPECITIESRESOLVER_H
 
-#include <QtNetwork>
+#include <QNetworkAccessManager>
 #include <QtNetwork>
 #include <city.h>
 
@@ -11,6 +11,7 @@ class europeCitiesResolver : public QObject
 
 public:
     europeCitiesResolver();
+    ~europeCitiesResolver();
     bool verifyCountry(QString cityName, QString country);
     QString getCountry(QString cityName);
     QHash<QString, city*>* getCities();
@@ -19,6 +20,7 @@ private:
     QHash<QString, city*> citiesList;
     void loadCities();
     QNetworkReply* cityNetworkReply;
+    QNetworkAccessManager* accessManager;
 
 public slots:
     void manageRawData();

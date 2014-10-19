@@ -11,10 +11,14 @@ europeCitiesResolver::europeCitiesResolver()
     this->loadCities();
 }
 
+europeCitiesResolver::~europeCitiesResolver()
+{
+    this->citiesList.clear();
+}
 
 void europeCitiesResolver::loadCities(){
     try{
-        QNetworkAccessManager* accessManager = new QNetworkAccessManager(this);
+        accessManager = new QNetworkAccessManager(this);
         QString citiesUrlstr = "http://api.geonames.org/cities?north=70&south=40&east=10&west=40&lang=en&username=testing300&maxRows=100";
         QUrl citiesEndPoint(citiesUrlstr);
         QNetworkRequest httpReq(citiesEndPoint);
@@ -69,6 +73,8 @@ void europeCitiesResolver::manageRawData()
                   }
               }              
         }
+        delete cityNetworkReply;
+        delete accessManager;
         this->dataLoaded();
     }
     catch (std::exception &e){
