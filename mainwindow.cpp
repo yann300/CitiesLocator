@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::stepTest(){
-    if (citiesRes->getCities()->count()){
-        QMessageBox::information(this, "No more cities...", e.what(), QMessageBox::Ok, QMessageBox::NoButton);
+    if (citiesRes->getCities()->count() == 0){
+        QMessageBox::information(this, "No more cities...", "", QMessageBox::Ok, QMessageBox::NoButton);
     }else{
         int finalNum = rand()%citiesRes->getCities()->count();
         ui->label->setText(citiesRes->getCities()->keys()[finalNum]);

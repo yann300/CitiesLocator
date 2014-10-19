@@ -20,7 +20,7 @@ void europeCitiesResolver::loadCities(){
         QNetworkRequest httpReq(citiesEndPoint);
         cityNetworkReply = accessManager->get(httpReq);
 
-        QObject::connect(cityNetworkReply, SIGNAL(readyRead()), this, SLOT(manageRawData()));
+        QObject::connect(cityNetworkReply, SIGNAL(finished()), this, SLOT(manageRawData()));
         QObject::connect(cityNetworkReply, SIGNAL(error()),this, SLOT(onError()));
     }
     catch (std::exception &e){
@@ -47,7 +47,8 @@ void europeCitiesResolver::manageRawData()
               {
                   if (xmlReader.name().toString() == "name" )
                   {
-                      currentCity = xmlReader.readElementText();
+                      i++ ;
+                      currentCity = xmlReader.readElementText();                      
                       if (!citiesList.contains(currentCity))
                       {
                           citiesList.insert(currentCity, new city());
@@ -59,19 +60,14 @@ void europeCitiesResolver::manageRawData()
                       citiesList.value(currentCity)->setCountry(xmlReader.readElementText());
                   }
                   else  if (xmlReader.name().toString() == "lat" )
-                  {
+                  {                    
                       citiesList.value(currentCity)->setlat(xmlReader.readElementText());
                   }
                   else  if (xmlReader.name().toString() == "lng" )
                   {
                       citiesList.value(currentCity)->setlng(xmlReader.readElementText());
                   }
-              }
-              else if (xmlReader.isEndElement())
-              {
-                  xmlReader.readNext();
-                  i++ ;
-              }
+              }              
         }
         this->dataLoaded();
     }
@@ -83,7 +79,7 @@ void europeCitiesResolver::manageRawData()
 bool europeCitiesResolver::verifyCountry(QString cityName, QString countryToValidate)
 {
     QString country = this->getCountry(cityName);
-    return country == countryToValidate;
+    return country.toLower() == countryToValidate.toLower();
 }
 
 QString europeCitiesResolver::getCountry(QString cityName)
