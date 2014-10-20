@@ -5,7 +5,8 @@ QT += qml quick widgets
 SOURCES += main.cpp \
     mainwindow.cpp \
     europecitiesresolver.cpp \
-    city.cpp
+    city.cpp \
+    timer.cpp
 
 RESOURCES +=
 
@@ -21,7 +22,8 @@ FORMS += \
 HEADERS += \
     mainwindow.h \
     europecitiesresolver.h \
-    city.h
+    city.h \
+    timer.h
 
 OTHER_FILES +=
 

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "europecitiesresolver.h"
+#include "timer.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,9 +26,7 @@ private:
     QStringListModel* modelTrue;
     QStringListModel* modelFalse;
     int score;
-    int elapsedSec;
-    QTimer* timer;
-    QTime* time;
+    Timer* timer;
 
 public slots:
     void handleokButton();
