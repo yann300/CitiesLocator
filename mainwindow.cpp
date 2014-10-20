@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtNetwork>
-#include "citieslistmodel.h"
 #include <QSplitter>
 #include <QtWebKitWidgets>
 
