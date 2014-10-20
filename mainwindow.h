@@ -34,6 +34,7 @@ public slots:
     void handleokButton();
     void startTest();
     void showTime();
+    void loadData(bool success);
 
 };
 

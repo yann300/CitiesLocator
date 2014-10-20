@@ -9,7 +9,6 @@ Timer::Timer()
     this->elapsedSec = 0;
 }
 
-
 QString Timer::udpateElapsedTime()
 {
     QTime newtime;
@@ -20,5 +19,7 @@ QString Timer::udpateElapsedTime()
 
 QString Timer::getElapsedTime()
 {
-    return time->toString("hh:mm:ss");
+    QTime newtime;
+    newtime = time->addSecs(this->elapsedSec);
+    return newtime.toString("hh:mm:ss");
 }

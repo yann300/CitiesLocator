@@ -51,7 +51,7 @@ void citiesResolver::manageRawData()
                       {
                           citiesList.insert(currentCity, new city());
                       }
-                      citiesList.value(currentCity)->setName(xmlReader.readElementText());
+                      citiesList.value(currentCity)->setName(currentCity);
                   }
                   else  if (xmlReader.name().toString() == "countryName" )
                   {

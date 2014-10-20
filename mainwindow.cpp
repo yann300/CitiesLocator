@@ -13,10 +13,15 @@ MainWindow::MainWindow(QWidget *parent) :
     try{
         ui->setupUi(this);
         this->score = 0;
-        citiesRes = new citiesResolver();
+
+        ui->webView->settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
+        QString fileName = qApp->applicationDirPath() + "/map.html";
+        QUrl url = QUrl::fromLocalFile( fileName );
+        connect(ui->webView, SIGNAL(loadFinished(bool)), this, SLOT(loadData(bool)));
+        ui->webView->load( url );
+
         connect(ui->okButton, SIGNAL(clicked()), this, SLOT(handleokButton()));
-        connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(handleokButton()));
-        connect(citiesRes, SIGNAL(dataLoaded()), this, SLOT(startTest()));
+        connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(handleokButton()));        
 
         modelTrue = new QStringListModel(this);
         modelFalse = new QStringListModel(this);
@@ -26,13 +31,20 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->listViewFalse->setModel(modelFalse);
         ui->listViewFalse->setStyleSheet(QString(" QListView#listViewFalse { color: red } "));
 
-        ui->webView->settings()->setAttribute(QWebSettings::JavascriptEnabled,true);
-        QString fileName = qApp->applicationDirPath() + "/map.html";
-        QUrl url = QUrl::fromLocalFile( fileName );
-        ui->webView->load( url );
+
     }
     catch (std::exception &e){
         QMessageBox::information(this, "Error", e.what(), QMessageBox::Ok, QMessageBox::NoButton);
+    }
+}
+
+void MainWindow::loadData(bool success){
+    if (success) {
+        citiesRes = new citiesResolver();
+        connect(citiesRes, SIGNAL(dataLoaded()), this, SLOT(startTest()));
+    }
+    else{
+        QMessageBox::information(this, "Error", "Unable to load html page (map)", QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
 
@@ -41,6 +53,7 @@ void MainWindow::startTest(){
         QMessageBox::information(this, "alert", "No cities, check internet connection please", QMessageBox::Ok, QMessageBox::NoButton);
         return;
     }
+
     timer = new Timer();
     connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
     this->nextStep();
@@ -56,7 +69,9 @@ void MainWindow::nextStep(){
         QMessageBox::information(this, "alert", "No more cities...", QMessageBox::Ok, QMessageBox::NoButton);
     }else{
         int finalNum = rand()%citiesRes->getCities()->count();
-        ui->label->setText(citiesRes->getCities()->keys()[finalNum]);
+        city* c = citiesRes->getCities()->values()[finalNum];
+        ui->label->setText(c->name);
+        ui->webView->page()->mainFrame()->evaluateJavaScript("initialize(" + c->lat + "," + c->lng + ")");
     }
     ui->lineEdit->clear();
 }
@@ -73,8 +88,7 @@ void MainWindow::handleokButton(){
     else{
         this->insertRow(modelFalse);
     }
-    city* city = this->citiesRes->getCities()->value(ui->label->text());
-    ui->webView->page()->mainFrame()->evaluateJavaScript("initialize(" + city->lat + "," + city->lng + ")");
+
     if (res){
         citiesRes->getCities()->remove(ui->label->text());
     }
