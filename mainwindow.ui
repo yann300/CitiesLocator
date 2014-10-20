@@ -552,8 +552,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="labelScore">
     <property name="geometry">
      <rect>
-      <x>940</x>
-      <y>20</y>
+      <x>900</x>
+      <y>10</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -582,6 +582,25 @@ p, li { white-space: pre-wrap; }
      <url>
       <string>about:blank</string>
      </url>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelTimer">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>20</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>NanumGothic</family>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

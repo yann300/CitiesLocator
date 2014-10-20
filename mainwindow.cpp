@@ -12,12 +12,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     try{
-        this->score = 0;
         ui->setupUi(this);
+        this->score = 0;
+        this->elapsedSec = 0;
         citiesRes = new europeCitiesResolver();
         connect(ui->okButton, SIGNAL(clicked()), this, SLOT(handleokButton()));
         connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(handleokButton()));
-        connect(citiesRes, SIGNAL(dataLoaded()), this, SLOT(stepTest()));
+        connect(citiesRes, SIGNAL(dataLoaded()), this, SLOT(startTest()));
 
         modelTrue = new QStringListModel(this);
         modelFalse = new QStringListModel(this);
@@ -37,7 +38,23 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 }
 
-void MainWindow::stepTest(){
+void MainWindow::startTest(){
+    timer = new QTimer(this);
+    time = new QTime();
+    time->setHMS(0,0,0,0);
+    connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
+    this->nextStep();
+    timer->start(1000);
+}
+
+void MainWindow::showTime(){
+    QTime newtime;
+    this->elapsedSec = this->elapsedSec + 1;
+    newtime = time->addSecs(this->elapsedSec);
+    ui->labelTimer->setText(newtime.toString("hh:mm:ss"));
+}
+
+void MainWindow::nextStep(){
     if (citiesRes->getCities()->count() == 0){
         QMessageBox::information(this, "No more cities...", "", QMessageBox::Ok, QMessageBox::NoButton);
     }else{
@@ -46,6 +63,7 @@ void MainWindow::stepTest(){
     }
     ui->lineEdit->clear();
 }
+
 
 void MainWindow::handleokButton(){
     QString testedCountry = ui->lineEdit->text();
@@ -65,8 +83,13 @@ void MainWindow::handleokButton(){
     if (res){
         citiesRes->getCities()->remove(ui->label->text());
     }
-
-    this->stepTest();
+    if (this->score >= 105){
+        ui->lineEdit->clear();
+        timer->stop();
+        QMessageBox::information(this, "", "You won !!", QMessageBox::Ok, QMessageBox::NoButton);
+    } else {
+        this->nextStep();
+    }
 }
 
 MainWindow::~MainWindow()
