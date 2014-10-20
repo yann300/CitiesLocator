@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "europecitiesresolver.h"
+#include <QStringListModel>
+#include <citiesresolver.h>
 #include "timer.h"
 
 namespace Ui {
@@ -16,7 +17,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    europeCitiesResolver* citiesRes;
+    citiesResolver* citiesRes;
     void nextStep();
     void stepTest();
     ~MainWindow();
@@ -27,6 +28,7 @@ private:
     QStringListModel* modelFalse;
     int score;
     Timer* timer;
+    void insertRow(QStringListModel* model);
 
 public slots:
     void handleokButton();

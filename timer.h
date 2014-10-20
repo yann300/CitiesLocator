@@ -6,7 +6,8 @@
 class Timer : public QTimer
 {
 public:
-    Timer(QObject *parent);
+    Timer();
+    QString udpateElapsedTime();
     QString getElapsedTime();
 private:
     QTime* time;

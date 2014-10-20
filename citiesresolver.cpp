@@ -1,4 +1,4 @@
-#include "europecitiesresolver.h"
+#include "citiesresolver.h"
 #include "city.h"
 #include <QtNetwork>
 #include <QUrl>
@@ -6,17 +6,17 @@
 #include <QXmlStreamReader>
 #include <QMessageBox>
 
-europeCitiesResolver::europeCitiesResolver()
+citiesResolver::citiesResolver()
 {
     this->loadCities();
 }
 
-europeCitiesResolver::~europeCitiesResolver()
+citiesResolver::~citiesResolver()
 {
     this->citiesList.clear();
 }
 
-void europeCitiesResolver::loadCities(){
+void citiesResolver::loadCities(){
     try{
         accessManager = new QNetworkAccessManager(this);
         QString citiesUrlstr = "http://api.geonames.org/cities?north=70&south=40&east=10&west=40&lang=en&username=testing300&maxRows=100";
@@ -25,19 +25,13 @@ void europeCitiesResolver::loadCities(){
         cityNetworkReply = accessManager->get(httpReq);
 
         QObject::connect(cityNetworkReply, SIGNAL(finished()), this, SLOT(manageRawData()));
-        QObject::connect(cityNetworkReply, SIGNAL(error()),this, SLOT(onError()));
     }
     catch (std::exception &e){
         QMessageBox::information(NULL, "Unable to get cities list", e.what(), QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
 
-void europeCitiesResolver::onError()
-{
-   QMessageBox::information(NULL, "Unable to get cities list", "", QMessageBox::Ok, QMessageBox::NoButton);
-}
-
-void europeCitiesResolver::manageRawData()
+void citiesResolver::manageRawData()
 {    
     try{
         QXmlStreamReader xmlReader(QString(cityNetworkReply->readAll()));
@@ -82,13 +76,13 @@ void europeCitiesResolver::manageRawData()
     }
 }
 
-bool europeCitiesResolver::verifyCountry(QString cityName, QString countryToValidate)
+bool citiesResolver::verifyCountry(QString cityName, QString countryToValidate)
 {
     QString country = this->getCountry(cityName);
     return country.toLower() == countryToValidate.toLower();
 }
 
-QString europeCitiesResolver::getCountry(QString cityName)
+QString citiesResolver::getCountry(QString cityName)
 {
     if (this->citiesList.contains(cityName)){
         return citiesList.value(cityName)->country;
@@ -96,7 +90,7 @@ QString europeCitiesResolver::getCountry(QString cityName)
     return NULL;
 }
 
-QHash<QString, city*>* europeCitiesResolver::getCities()
+QHash<QString, city*>* citiesResolver::getCities()
 {
     return &this->citiesList;
 }

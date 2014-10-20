@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtNetwork>
-#include "europecitiesresolver.h"
 #include "citieslistmodel.h"
 #include <QSplitter>
 #include <QtWebKitWidgets>
@@ -14,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     try{
         ui->setupUi(this);
         this->score = 0;
-        citiesRes = new europeCitiesResolver();
+        citiesRes = new citiesResolver();
         connect(ui->okButton, SIGNAL(clicked()), this, SLOT(handleokButton()));
         connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(handleokButton()));
         connect(citiesRes, SIGNAL(dataLoaded()), this, SLOT(startTest()));
@@ -38,14 +37,18 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::startTest(){
-    timer = new Timer(this);
+    if (citiesRes->getCities()->count() == 0){
+        QMessageBox::information(this, "alert", "No cities, check internet connection please", QMessageBox::Ok, QMessageBox::NoButton);
+        return;
+    }
+    timer = new Timer();
     connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
     this->nextStep();
     timer->start(1000);
 }
 
 void MainWindow::showTime(){
-    ui->labelTimer->setText(timer->getElapsedTime());
+    ui->labelTimer->setText(timer->udpateElapsedTime());
 }
 
 void MainWindow::nextStep(){
@@ -63,14 +66,12 @@ void MainWindow::handleokButton(){
     QString testedCountry = ui->lineEdit->text();
     bool res = this->citiesRes->verifyCountry(ui->label->text(), testedCountry);
     if (res){        
-        modelTrue->insertRows(modelTrue->rowCount(), 1);
-        modelTrue->setData(modelTrue->index(modelTrue->rowCount()-1), ui->label->text());
+        this->insertRow(modelTrue);
         this->score = this->score + 15;
         ui->labelScore->setText(QString::number(this->score));
     }
     else{
-        modelFalse->insertRows(modelFalse->rowCount(), 1);
-        modelFalse->setData(modelFalse->index(modelFalse->rowCount()-1), ui->label->text());
+        this->insertRow(modelFalse);
     }
     city* city = this->citiesRes->getCities()->value(ui->label->text());
     ui->webView->page()->mainFrame()->evaluateJavaScript("initialize(" + city->lat + "," + city->lng + ")");
@@ -80,14 +81,20 @@ void MainWindow::handleokButton(){
     if (this->score >= 105){
         ui->lineEdit->clear();
         timer->stop();
-        QMessageBox::information(this, "alert", "You won !!", QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::information(this, "alert", "finished! 105pts in " + timer->getElapsedTime() , QMessageBox::Ok, QMessageBox::NoButton);
     } else {
         this->nextStep();
     }
 }
 
+void MainWindow::insertRow(QStringListModel* model){
+    model->insertRows(model->rowCount(), 1);
+    model->setData(model->index(model->rowCount()-1), ui->label->text());
+}
+
 MainWindow::~MainWindow()
 {
+    delete timer;
     delete modelFalse;
     delete modelTrue;
     delete citiesRes;

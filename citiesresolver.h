@@ -5,13 +5,13 @@
 #include <QtNetwork>
 #include <city.h>
 
-class europeCitiesResolver : public QObject
+class citiesResolver : public QObject
 {
     Q_OBJECT
 
 public:
-    europeCitiesResolver();
-    ~europeCitiesResolver();
+    citiesResolver();
+    ~citiesResolver();
     bool verifyCountry(QString cityName, QString country);
     QString getCountry(QString cityName);
     QHash<QString, city*>* getCities();
@@ -24,7 +24,7 @@ private:
 
 public slots:
     void manageRawData();
-    void onError();
+
 
 signals:
     void dataLoaded();
